@@ -1,0 +1,76 @@
+services:
+  monitor:
+    hostname: monitor
+    build: ./monitor
+    environment:
+      - ROLE=monitor
+    ports:
+      - "8080:80"
+    networks:
+      monitor:
+        ipv4_address: 192.168.254.254
+      cluster1:
+        ipv4_address: 192.168.10.253
+      cluster2:
+        ipv4_address: 192.168.20.253
+  cluster1-monitor:
+    hostname: cluster1-monitor
+    build: ./monitor
+    environment:
+      - ROLE=cluster1-monitor
+    ports:
+      - "8081:80"
+    networks:
+      cluster1:
+        ipv4_address: 192.168.10.254
+  cluster1-node1:
+    hostname: cluster1-node1
+    build: ./node
+    networks:
+      cluster1:
+        ipv4_address: 192.168.10.2
+  cluster1-node2:
+    hostname: cluster1-node2
+    build: ./node
+    networks:
+      cluster1:
+        ipv4_address: 192.168.10.3
+  cluster2-monitor:
+    hostname: cluster2-monitor
+    build: ./monitor
+    environment:
+      - ROLE=cluster2-monitor
+    ports:
+      - "8082:80"
+    networks:
+      cluster2:
+        ipv4_address: 192.168.20.254
+  cluster2-node1:
+    hostname: cluster2-node1
+    build: ./node
+    networks:
+      cluster2:
+        ipv4_address: 192.168.20.2
+  cluster2-node2:
+    hostname: cluster2-node2
+    build: ./node
+    networks:
+      cluster2:
+        ipv4_address: 192.168.20.3
+networks:
+  monitor:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 192.168.254.0/24
+  cluster1:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 192.168.10.0/24
+  cluster2:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 192.168.20.0/24
+    
